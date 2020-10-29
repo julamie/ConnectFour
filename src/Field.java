@@ -66,16 +66,16 @@ public class Field extends JPanel implements ActionListener {
 
         // count all stones left of the most recent stone
         int i = column - 1;
-        int HorMatches = 1;
+        int horMatches = 1;
         while (i >= 0 && cells[i][height].getColor() == color) {
-            HorMatches++;
+            horMatches++;
             i--;
         }
 
         // count all from the right
         i = column + 1;
         while (i < columns && cells[i][height].getColor() == color) {
-            HorMatches++;
+            horMatches++;
             i++;
         }
 
@@ -115,13 +115,15 @@ public class Field extends JPanel implements ActionListener {
             i++;
         }
 
-        return HorMatches >= 4 || downMatches >= 4 || upDiaMatches >= 4 || downDiaMatches >= 4;
+        return horMatches >= 4 || downMatches >= 4 || upDiaMatches >= 4 || downDiaMatches >= 4;
     }
 
+    // open up a prompt to ask if the player wants to restart after finishing the game
     void determineWinner() {
         String winner = currColor == Color.RED ? "red" : "yellow";
         String message = "Congratulations " + winner + "! You won!\n\n Would you like to restart?";
         int response = JOptionPane.showConfirmDialog(this, message, "End of game", JOptionPane.YES_NO_OPTION);
+
         if (response == JOptionPane.YES_OPTION) restartGame();
         else {
             // remove all action listeners of the game so that no new stones can be added
