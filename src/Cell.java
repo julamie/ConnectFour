@@ -6,12 +6,12 @@ public class Cell extends JButton {
     int column;
     Color color;
     Color emptyColor; // color when there is no stone inside
-    final int length; // Button is a square
+    final int length = Window.WIDTH / 7; // Button is a square
+    final int radius = 4 * length / 5;
 
-    Cell(int column, int length, Color color) {
+    Cell(int column, Color color) {
         super();
         this.column = column;
-        this.length = length;
         this.color = color;
         this.emptyColor = color;
         this.setActionCommand(column + "");
@@ -24,9 +24,9 @@ public class Cell extends JButton {
         g.setColor(Color.BLUE);
 
         // draws an empty circle in the middle of a blue frame
-        g.fillRect(0, 0, getWidth(), getHeight());
+        g.fillRect(0, 0, length, length);
         g.setColor(color);
-        g.fillOval(length / 10, length / 10, 4 * length / 5, 4 * length / 5);
+        g.fillOval((length - radius) / 2, (length - radius) / 2, radius, radius);
     }
 
     Color getColor() {

@@ -7,7 +7,7 @@ public class Field extends JPanel implements ActionListener {
 
     int columns = 7;
     int rows = 6;
-    Cell[][] cells = new Cell[columns][rows]; // cells[column][height] both beginning at 0
+    Cell[][] cells = new Cell[columns][rows];
     Color backgroundColor = Color.LIGHT_GRAY;
     Color currColor = Color.RED;
 
@@ -24,7 +24,7 @@ public class Field extends JPanel implements ActionListener {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 // add cells to the field
-                Cell cell = new Cell(j, Window.WIDTH / 14, backgroundColor);
+                Cell cell = new Cell(j, backgroundColor);
 
                 this.add(cell);
                 cell.addActionListener(this);
@@ -118,6 +118,31 @@ public class Field extends JPanel implements ActionListener {
         return HorMatches >= 4 || downMatches >= 4 || upDiaMatches >= 4 || downDiaMatches >= 4;
     }
 
+    void determineWinner() {
+        String winner = currColor == Color.RED ? "red" : "yellow";
+        String message = "Congratulations " + winner + "! You won!\n\n Would you like to restart?";
+        int response = JOptionPane.showConfirmDialog(this, message, "End of game", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) restartGame();
+        else {
+            // remove all action listeners of the game so that no new stones can be added
+            for (Cell[] column : cells) {
+                for (Cell cell : column) {
+                    cell.removeActionListener(this);
+                }
+            }
+        }
+    }
+
+    void restartGame() {
+        currColor = Color.RED;
+
+        for (Cell[] column: cells) {
+            for (Cell cell: column) {
+                cell.setColor(backgroundColor);
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String cellID = e.getActionCommand();
@@ -127,10 +152,9 @@ public class Field extends JPanel implements ActionListener {
             int height = getLowestCellHeight(column);
             setCellColor(column, height);
             if (checkRowOfFour(column, height)) {
-                System.out.println("Winner!");
+                determineWinner();
             }
             else nextMove();
         }
-        else System.out.println("No space in this column");
     }
 }
