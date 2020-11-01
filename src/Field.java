@@ -7,6 +7,7 @@ public class Field extends JPanel implements ActionListener {
 
     int columns = 7;
     int rows = 6;
+    int stonesPlaced = 0;
     Cell[][] cells = new Cell[columns][rows];
     Color backgroundColor = Color.LIGHT_GRAY;
     Color currColor = Color.RED;
@@ -52,6 +53,7 @@ public class Field extends JPanel implements ActionListener {
     }
 
     void nextMove() {
+        stonesPlaced++;
         currColor = currColor == Color.RED ? Color.YELLOW : Color.RED;
     }
 
@@ -119,9 +121,16 @@ public class Field extends JPanel implements ActionListener {
     }
 
     // open up a prompt to ask if the player wants to restart after finishing the game
-    void determineWinner() {
-        String winner = currColor == Color.RED ? "red" : "yellow";
-        String message = "Congratulations " + winner + "! You won!\n\n Would you like to restart?";
+    void endGame() {
+        String message;
+
+        // determine message which should be displayed
+        if (stonesPlaced == columns * rows) {
+            message = "The game tied.\n\nWould you like to restart?";
+        } else {
+            String winner = currColor == Color.RED ? "red" : "yellow";
+            message = "Congratulations " + winner + "! You won!\n\nWould you like to restart?";
+        }
         int response = JOptionPane.showConfirmDialog(this, message, "End of game", JOptionPane.YES_NO_OPTION);
 
         if (response == JOptionPane.YES_OPTION) restartGame();
@@ -153,9 +162,9 @@ public class Field extends JPanel implements ActionListener {
         if (columnSpaceAvailable(column)) {
             int height = getLowestCellHeight(column);
             setCellColor(column, height);
-            if (checkRowOfFour(column, height)) {
-                determineWinner();
-            }
+
+            // check if there's a row of four or the field is full
+            if (checkRowOfFour(column, height) || stonesPlaced == columns * rows) endGame();
             else nextMove();
         }
     }
