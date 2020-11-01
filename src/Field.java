@@ -34,7 +34,7 @@ public class Field extends JPanel implements ActionListener {
         }
     }
 
-    void setCellColor(int column, int height) {
+    void changeCellColor(int column, int height) {
         cells[column][height].setColor(currColor);
     }
 
@@ -125,7 +125,7 @@ public class Field extends JPanel implements ActionListener {
         String message;
 
         // determine message which should be displayed
-        if (stonesPlaced == columns * rows) {
+        if (stonesPlaced == columns * rows - 1) {
             message = "The game tied.\n\nWould you like to restart?";
         } else {
             String winner = currColor == Color.RED ? "red" : "yellow";
@@ -145,6 +145,7 @@ public class Field extends JPanel implements ActionListener {
     }
 
     void restartGame() {
+        stonesPlaced = 0;
         currColor = Color.RED;
 
         for (Cell[] column: cells) {
@@ -161,10 +162,10 @@ public class Field extends JPanel implements ActionListener {
         int column = Integer.parseInt(cellID);
         if (columnSpaceAvailable(column)) {
             int height = getLowestCellHeight(column);
-            setCellColor(column, height);
+            changeCellColor(column, height);
 
             // check if there's a row of four or the field is full
-            if (checkRowOfFour(column, height) || stonesPlaced == columns * rows) endGame();
+            if (checkRowOfFour(column, height) || stonesPlaced == columns * rows - 1) endGame();
             else nextMove();
         }
     }
